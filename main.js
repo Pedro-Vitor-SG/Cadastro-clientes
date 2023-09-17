@@ -43,6 +43,11 @@ document.querySelector("#save").addEventListener("click", function () {
   document.getElementById("modal").classList.remove("active");
   //chamando função de criar novo cliente
   newClient();
+
+  document.querySelector("#name-input").value = ``;
+  document.querySelector("#email-input").value = ``;
+  document.querySelector("#number-input").value = ``;
+  document.querySelector("#city-input").value = ``;
 });
 //=====================================CREATE===================================
 
@@ -96,61 +101,72 @@ removeClient();
 //====================================DELETE====================================
 
 function updateClient() {
-  //EVENTO DE CLICK NO DOCUMENTO TODO
+
   document.addEventListener("click", function (e) {
-    //TODOS MEUS ELEMNTOS COM ESSA CLASSE
     let clientes = document.querySelectorAll(".client");
 
-    //SE O ELEMENTO CLICADO TIVER A CLASSE
     if (e.target.classList.contains("edit-btn")) {
-      // LOOP PARA PEGAR TODOS OS ELEMTNOS SEPARADAMENTE
+      let dataIdBtn = e.target.getAttribute("data-id");
+      document.getElementById("edit-modal").setAttribute("data-id", dataIdBtn);
+
       for (let i = 0; i < clientes.length; i++) {
-        //SE O CLICENTE ATUAL TIVER O ID IGUAL AO DATA-ID DO BOTÃO DE EDITAR
-        if (
-          clientes[i].getAttribute("id") === e.target.getAttribute("data-id")
-        ) {
-          //ABRIR MODAL DE EDITAR
-          document.getElementById("edit-modal").classList.add("active");
+        if ( clientes[i].getAttribute("id") === e.target.getAttribute("data-id")) {
+          document.querySelector("#edit-name-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[0].innerHTML
+          document.querySelector("#edit-email-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[1].innerHTML
+          document.querySelector("#edit-number-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[2].innerHTML
+          document.querySelector("#edit-city-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[3].innerHTML
+        }
+      }
+  
 
-          //EVENTO DE CLICK NO ELEMNTO
-          document
-            .querySelector("#edit-save")
-            .addEventListener("click", function () {
-              //NOVA VARIAVEL PARA O ID E DATAID
-              let newId = i + 1;
+      document.getElementById("edit-modal").classList.add("active");
 
-              //OBJETO COM OS ATRIBUTOS DO CLIENTE COM O VALOR DO MODAL DE EDITAR
-              let editClient = {
-                name: document.querySelector("#edit-name-input").value,
-                email: document.querySelector("#edit-email-input").value,
-                numero: document.querySelector("#edit-number-input").value,
-                cidade: document.querySelector("#edit-city-input").value,
-              };
+      document
+        .querySelector("#edit-save")
+        .addEventListener("click", function () {
 
-              //EDITANDO  O ELEMENTO HTML 
-              let html = `<tr class="client" id="${newId}">
+          let editClient = {
+            name: document.querySelector("#edit-name-input").value,
+            email: document.querySelector("#edit-email-input").value,
+            numero: document.querySelector("#edit-number-input").value,
+            cidade: document.querySelector("#edit-city-input").value,
+          };
+
+          let html = `<tr class="client" id="${dataIdBtn}">
                               <td>${editClient.name}</td>
                               <td>${editClient.email}</td>
                               <td>${editClient.numero}</td>
                               <td>${editClient.cidade}</td>
                               <td>
-                                  <button type="button" class="button green edit-btn" data-id=${newId}>editar</button>
-                                  <button type="button" class="button red excluir-btn" data-id=${newId}>excluir</button>
+                                  <button type="button" class="button green edit-btn" data-id=${dataIdBtn}>editar</button>
+                                  <button type="button" class="button red excluir-btn" data-id=${dataIdBtn}>excluir</button>
                               </td>
                           </tr>
                           `;
 
-              //ATRIUINDO O OS VALORES EDITADOS
-              clientes[i].innerHTML = html;
 
-              //REMOVENDO MODAL
-              document.getElementById("edit-modal").classList.remove("active");
-            });
-        }
-      }
+          for (let i = 0; i < clientes.length; i++) {
+            if (clientes[i].getAttribute("id") === e.target.getAttribute("data-id") && 
+                  e.target.getAttribute("data-id") === document.getElementById("edit-modal").getAttribute(`data-id`)) {
+                  clientes[i].innerHTML = html
+
+                  console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"), 
+                                `id do btn `+ e.target.getAttribute("data-id"), 
+                                `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+                              )
+            } else{
+                  console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"), 
+                                `id do btn `+ e.target.getAttribute("data-id"), 
+                                `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+                              )
+            }
+          }
+
+          //REMOVENDO MODAL
+          document.getElementById("edit-modal").classList.remove("active");
+        });
     }
   });
 }
 
-//CHAMANDO FUNCAO
 updateClient();
