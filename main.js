@@ -101,30 +101,45 @@ removeClient();
 //====================================DELETE====================================
 
 function updateClient() {
-
+  //funcao de click em todo o DOM
   document.addEventListener("click", function (e) {
+    //todos os elementos com a classe
     let clientes = document.querySelectorAll(".client");
-
+    //Se o elemento clicado tiver a classe
     if (e.target.classList.contains("edit-btn")) {
+      //Variavel que guarda o data-id do elemento edit-btn
       let dataIdBtn = e.target.getAttribute("data-id");
+
+      //setando o atributo e passando o valor ao edit-modal
       document.getElementById("edit-modal").setAttribute("data-id", dataIdBtn);
 
+      //perocrre o array de clientes
       for (let i = 0; i < clientes.length; i++) {
+        //Se o cliente atual tiver o id igual ao data-id do edit-btn
         if ( clientes[i].getAttribute("id") === e.target.getAttribute("data-id")) {
+          //edit-name-input recebe o innerhtml do td na posicao 0 do tr do cliente 
           document.querySelector("#edit-name-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[0].innerHTML
+
+          //edit-name-input recebe o innerhtml do td na posicao 1 do tr do cliente 
           document.querySelector("#edit-email-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[1].innerHTML
+
+          //edit-name-input recebe o innerhtml do td na posicao 2 do tr do cliente 
           document.querySelector("#edit-number-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[2].innerHTML
+
+          //edit-name-input recebe o innerhtml do td na posicao 3 do tr do cliente 
           document.querySelector("#edit-city-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[3].innerHTML
         }
       }
   
-
+      //adicionando a classe
       document.getElementById("edit-modal").classList.add("active");
 
+      //quando clicar no edit-save
       document
         .querySelector("#edit-save")
         .addEventListener("click", function () {
 
+          //objeto de editar o cliente
           let editClient = {
             name: document.querySelector("#edit-name-input").value,
             email: document.querySelector("#edit-email-input").value,
@@ -132,6 +147,7 @@ function updateClient() {
             cidade: document.querySelector("#edit-city-input").value,
           };
 
+          //html da tr com os valores editados 
           let html = `<tr class="client" id="${dataIdBtn}">
                               <td>${editClient.name}</td>
                               <td>${editClient.email}</td>
@@ -144,22 +160,26 @@ function updateClient() {
                           </tr>
                           `;
 
-
+          //perocrre o array de clientes
           for (let i = 0; i < clientes.length; i++) {
+            //Se o cliente atual tiver o id igual ao data-id do edit-btn EE o data-id do edit-btn for igual ao data-id do modal
             if (clientes[i].getAttribute("id") === e.target.getAttribute("data-id") && 
                   e.target.getAttribute("data-id") === document.getElementById("edit-modal").getAttribute(`data-id`)) {
-                  clientes[i].innerHTML = html
 
-                  console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"), 
-                                `id do btn `+ e.target.getAttribute("data-id"), 
-                                `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-                              )
-            } else{
-                  console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"), 
-                                `id do btn `+ e.target.getAttribute("data-id"), 
-                                `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-                              )
-            }
+                  //cliente atual recebe o valor do html
+                  clientes[i].innerHTML = html
+                  
+                  // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"), 
+                  //               `id do btn `+ e.target.getAttribute("data-id"), 
+                  //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+                  //             )
+            } 
+            // else{
+            //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"), 
+            //                     `id do btn `+ e.target.getAttribute("data-id"), 
+            //                     `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+            //                   )
+            // }
           }
 
           //REMOVENDO MODAL
@@ -169,4 +189,5 @@ function updateClient() {
   });
 }
 
+//Chamando funcao
 updateClient();
