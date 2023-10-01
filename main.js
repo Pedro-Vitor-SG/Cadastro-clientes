@@ -12,6 +12,56 @@ document
 
 document.getElementById("modalClose").addEventListener("click", closeModal);
 
+// var regExp = /^(?:\+)[0-9]{2}\s?(?:\()[0-9]{2}(?:\))\s?[0-9]{4,5}(?:-)[0-9]{4}$/;
+
+function maskInputNumber() {
+  document.querySelector("#number-input").addEventListener("keydown", function (event) {
+    //pega o evento de precionar uma tecla
+    if (event.keyCode != 46 && event.keyCode != 8) {
+      //verifica se a tecla precionada nao e um backspace e delete
+      var i = document.querySelector("#number-input").value.length;
+      if (i === 0)
+        document.querySelector("#number-input").value =
+          document.querySelector("#number-input").value + "(";
+      else if (i === 3)
+        document.querySelector("#number-input").value =
+          document.querySelector("#number-input").value + ") ";
+    }
+  });
+}
+maskInputNumber();
+
+function validarNovoCliente() {
+  let validName =
+    document.querySelector("#name-input").value !== "" ? true : false;
+
+  let validEmail;
+  if (
+    document.querySelector("#email-input").value.includes("@") &&
+    document.querySelector("#email-input").value !== ""
+  ) {
+    validEmail = true;
+  } else {
+    validEmail = false;
+  }
+
+  let validNumber =
+    document.querySelector("#number-input").value !== "" ? true : false;
+  let validCity =
+    document.querySelector("#city-input").value !== "" ? true : false;
+
+  if(validName === false || validEmail === false || validNumber === false || validCity === false){
+    if((validName === true && validEmail === false && validNumber === true && validCity && true)) {
+      document.querySelector('.error-msg').innerHTML = ('Digite um email válido')
+      return false;
+    }
+    document.querySelector('.error-msg').innerHTML = ('Preencha todas as infromações')
+    return false;
+  } else 
+      return true;
+
+}
+
 //ARRAY DE CLIENTES
 const listClientes = [];
 
@@ -39,15 +89,19 @@ const newClient = () => {
 
 //ATRIBUINDO O EVENTO DE CLICK AO ELEMNTO DE ID save
 document.querySelector("#save").addEventListener("click", function () {
-  //fechando modal após o click
-  document.getElementById("modal").classList.remove("active");
-  //chamando função de criar novo cliente
-  newClient();
-
-  document.querySelector("#name-input").value = ``;
-  document.querySelector("#email-input").value = ``;
-  document.querySelector("#number-input").value = ``;
-  document.querySelector("#city-input").value = ``;
+  console.log(validarNovoCliente())
+  if (validarNovoCliente()) {
+    
+    //chamando função de criar novo cliente
+    newClient()
+    
+    //fechando modal após o click
+    document.getElementById("modal").classList.remove("active");
+    document.querySelector("#name-input").value = ``;
+    document.querySelector("#email-input").value = ``;
+    document.querySelector("#number-input").value = ``;
+    document.querySelector("#city-input").value = ``;
+  };
 });
 //=====================================CREATE===================================
 
@@ -116,21 +170,31 @@ function updateClient() {
       //perocrre o array de clientes
       for (let i = 0; i < clientes.length; i++) {
         //Se o cliente atual tiver o id igual ao data-id do edit-btn
-        if ( clientes[i].getAttribute("id") === e.target.getAttribute("data-id")) {
-          //edit-name-input recebe o innerhtml do td na posicao 0 do tr do cliente 
-          document.querySelector("#edit-name-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[0].innerHTML
+        if (
+          clientes[i].getAttribute("id") === e.target.getAttribute("data-id")
+        ) {
+          //edit-name-input recebe o innerhtml do td na posicao 0 do tr do cliente
+          document.querySelector("#edit-name-input").value = clientes[i]
+            .closest(`tr`)
+            .querySelectorAll(`td`)[0].innerHTML;
 
-          //edit-name-input recebe o innerhtml do td na posicao 1 do tr do cliente 
-          document.querySelector("#edit-email-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[1].innerHTML
+          //edit-name-input recebe o innerhtml do td na posicao 1 do tr do cliente
+          document.querySelector("#edit-email-input").value = clientes[i]
+            .closest(`tr`)
+            .querySelectorAll(`td`)[1].innerHTML;
 
-          //edit-name-input recebe o innerhtml do td na posicao 2 do tr do cliente 
-          document.querySelector("#edit-number-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[2].innerHTML
+          //edit-name-input recebe o innerhtml do td na posicao 2 do tr do cliente
+          document.querySelector("#edit-number-input").value = clientes[i]
+            .closest(`tr`)
+            .querySelectorAll(`td`)[2].innerHTML;
 
-          //edit-name-input recebe o innerhtml do td na posicao 3 do tr do cliente 
-          document.querySelector("#edit-city-input").value = clientes[i].closest(`tr`).querySelectorAll(`td`)[3].innerHTML
+          //edit-name-input recebe o innerhtml do td na posicao 3 do tr do cliente
+          document.querySelector("#edit-city-input").value = clientes[i]
+            .closest(`tr`)
+            .querySelectorAll(`td`)[3].innerHTML;
         }
       }
-  
+
       //adicionando a classe
       document.getElementById("edit-modal").classList.add("active");
 
@@ -138,7 +202,6 @@ function updateClient() {
       document
         .querySelector("#edit-save")
         .addEventListener("click", function () {
-
           //objeto de editar o cliente
           let editClient = {
             name: document.querySelector("#edit-name-input").value,
@@ -147,7 +210,7 @@ function updateClient() {
             cidade: document.querySelector("#edit-city-input").value,
           };
 
-          //html da tr com os valores editados 
+          //html da tr com os valores editados
           let html = `<tr class="client" id="${dataIdBtn}">
                               <td>${editClient.name}</td>
                               <td>${editClient.email}</td>
@@ -163,20 +226,23 @@ function updateClient() {
           //perocrre o array de clientes
           for (let i = 0; i < clientes.length; i++) {
             //Se o cliente atual tiver o id igual ao data-id do edit-btn EE o data-id do edit-btn for igual ao data-id do modal
-            if (clientes[i].getAttribute("id") === e.target.getAttribute("data-id") && 
-                  e.target.getAttribute("data-id") === document.getElementById("edit-modal").getAttribute(`data-id`)) {
+            if (
+              clientes[i].getAttribute("id") ===
+                e.target.getAttribute("data-id") &&
+              e.target.getAttribute("data-id") ===
+                document.getElementById("edit-modal").getAttribute(`data-id`)
+            ) {
+              //cliente atual recebe o valor do html
+              clientes[i].innerHTML = html;
 
-                  //cliente atual recebe o valor do html
-                  clientes[i].innerHTML = html
-                  
-                  // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"), 
-                  //               `id do btn `+ e.target.getAttribute("data-id"), 
-                  //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-                  //             )
-            } 
+              // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"),
+              //               `id do btn `+ e.target.getAttribute("data-id"),
+              //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+              //             )
+            }
             // else{
-            //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"), 
-            //                     `id do btn `+ e.target.getAttribute("data-id"), 
+            //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"),
+            //                     `id do btn `+ e.target.getAttribute("data-id"),
             //                     `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
             //                   )
             // }
