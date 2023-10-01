@@ -12,8 +12,11 @@ document
 
 document.getElementById("modalClose").addEventListener("click", closeModal);
 
-// var regExp = /^(?:\+)[0-9]{2}\s?(?:\()[0-9]{2}(?:\))\s?[0-9]{4,5}(?:-)[0-9]{4}$/;
 
+
+//=====================================CREATE===================================
+
+//ADICIONA MASCARA AO INPUT DE TELEFONE
 function maskInputNumber() {
   document.querySelector("#number-input").addEventListener("keydown", function (event) {
     //pega o evento de precionar uma tecla
@@ -31,7 +34,8 @@ function maskInputNumber() {
 }
 maskInputNumber();
 
-function validarNovoCliente() {
+//VALIDAR NOVO CLIENTE
+function validateNewClient() {
   let validName =
     document.querySelector("#name-input").value !== "" ? true : false;
 
@@ -68,7 +72,6 @@ const listClientes = [];
 //CONTADOR
 let countID = 1;
 
-//=====================================CREATE===================================
 //FUNÇÃO QUE CRIA UM NOVO CLIENTE
 const newClient = () => {
   //OBJETO COM OS ATRIBUTOS DO CLIENTE
@@ -89,8 +92,7 @@ const newClient = () => {
 
 //ATRIBUINDO O EVENTO DE CLICK AO ELEMNTO DE ID save
 document.querySelector("#save").addEventListener("click", function () {
-  console.log(validarNovoCliente())
-  if (validarNovoCliente()) {
+  if (validateNewClient()) {
     
     //chamando função de criar novo cliente
     newClient()
@@ -103,7 +105,17 @@ document.querySelector("#save").addEventListener("click", function () {
     document.querySelector("#city-input").value = ``;
   };
 });
+
+document.querySelector("#cancel").addEventListener("click", function () {
+  document.getElementById("modal").classList.remove("active");
+  document.querySelector("#name-input").value = ``;
+  document.querySelector("#email-input").value = ``;
+  document.querySelector("#number-input").value = ``;
+  document.querySelector("#city-input").value = ``;
+})
+
 //=====================================CREATE===================================
+
 
 //=====================================READ===================================
 function readClient(client) {
