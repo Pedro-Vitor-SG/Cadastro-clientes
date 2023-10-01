@@ -81,7 +81,12 @@
     text-align: right;
     padding: 0 20px;
 }
-
+.error-msg{
+    color: #FF4949;
+    font-weight: bold;
+    text-align: center;
+    height: 19px;
+}
 @media (max-width:480px){
     .modal{
         top:100%;
