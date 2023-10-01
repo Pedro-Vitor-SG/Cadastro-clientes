@@ -17,22 +17,22 @@ document.getElementById("modalClose").addEventListener("click", closeModal);
 //=====================================CREATE===================================
 
 //ADICIONA MASCARA AO INPUT DE TELEFONE
-function maskInputNumber() {
-  document.querySelector("#number-input").addEventListener("keydown", function (event) {
+function maskInputNumber(input) {
+  input.addEventListener("keydown", function (event) {
     //pega o evento de precionar uma tecla
     if (event.keyCode != 46 && event.keyCode != 8) {
       //verifica se a tecla precionada nao e um backspace e delete
-      var i = document.querySelector("#number-input").value.length;
+      var i = input.value.length;
       if (i === 0)
-        document.querySelector("#number-input").value =
-          document.querySelector("#number-input").value + "(";
+        input.value =
+          input.value + "(";
       else if (i === 3)
-        document.querySelector("#number-input").value =
-          document.querySelector("#number-input").value + ") ";
+        input.value =
+          input.value + ") ";
     }
   });
 }
-maskInputNumber();
+maskInputNumber(document.querySelector("#number-input"));
 
 //VALIDAR NOVO CLIENTE
 function validateNewClient() {
@@ -106,7 +106,7 @@ document.querySelector("#save").addEventListener("click", function () {
   };
 });
 
-document.querySelector("#cancel").addEventListener("click", function () {
+document.querySelector(".cancel").addEventListener("click", function () {
   document.getElementById("modal").classList.remove("active");
   document.querySelector("#name-input").value = ``;
   document.querySelector("#email-input").value = ``;
@@ -214,58 +214,58 @@ function updateClient() {
       document
         .querySelector("#edit-save")
         .addEventListener("click", function () {
-          //objeto de editar o cliente
-          let editClient = {
-            name: document.querySelector("#edit-name-input").value,
-            email: document.querySelector("#edit-email-input").value,
-            numero: document.querySelector("#edit-number-input").value,
-            cidade: document.querySelector("#edit-city-input").value,
-          };
+            //objeto de editar o cliente
+            let editClient = {
+              name: document.querySelector("#edit-name-input").value,
+              email: document.querySelector("#edit-email-input").value,
+              numero: document.querySelector("#edit-number-input").value,
+              cidade: document.querySelector("#edit-city-input").value,
+            };
 
-          //html da tr com os valores editados
-          let html = `<tr class="client" id="${dataIdBtn}">
-                              <td>${editClient.name}</td>
-                              <td>${editClient.email}</td>
-                              <td>${editClient.numero}</td>
-                              <td>${editClient.cidade}</td>
-                              <td>
-                                  <button type="button" class="button green edit-btn" data-id=${dataIdBtn}>editar</button>
-                                  <button type="button" class="button red excluir-btn" data-id=${dataIdBtn}>excluir</button>
-                              </td>
-                          </tr>
-                          `;
+            //html da tr com os valores editados
+            let html = `<tr class="client" id="${dataIdBtn}">
+                                <td>${editClient.name}</td>
+                                <td>${editClient.email}</td>
+                                <td>${editClient.numero}</td>
+                                <td>${editClient.cidade}</td>
+                                <td>
+                                    <button type="button" class="button green edit-btn" data-id=${dataIdBtn}>editar</button>
+                                    <button type="button" class="button red excluir-btn" data-id=${dataIdBtn}>excluir</button>
+                                </td>
+                            </tr>
+                            `;
 
-          //perocrre o array de clientes
-          for (let i = 0; i < clientes.length; i++) {
-            //Se o cliente atual tiver o id igual ao data-id do edit-btn EE o data-id do edit-btn for igual ao data-id do modal
-            if (
-              clientes[i].getAttribute("id") ===
-                e.target.getAttribute("data-id") &&
-              e.target.getAttribute("data-id") ===
-                document.getElementById("edit-modal").getAttribute(`data-id`)
-            ) {
-              //cliente atual recebe o valor do html
-              clientes[i].innerHTML = html;
+            //perocrre o array de clientes
+            for (let i = 0; i < clientes.length; i++) {
+              //Se o cliente atual tiver o id igual ao data-id do edit-btn EE o data-id do edit-btn for igual ao data-id do modal
+              if (
+                clientes[i].getAttribute("id") ===
+                  e.target.getAttribute("data-id") &&
+                e.target.getAttribute("data-id") ===
+                  document.getElementById("edit-modal").getAttribute(`data-id`)
+              ) {
+                //cliente atual recebe o valor do html
+                clientes[i].innerHTML = html;
 
-              // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"),
-              //               `id do btn `+ e.target.getAttribute("data-id"),
-              //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-              //             )
+                // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"),
+                //               `id do btn `+ e.target.getAttribute("data-id"),
+                //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+                //             )
+              }
+              // else{
+              //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"),
+              //                     `id do btn `+ e.target.getAttribute("data-id"),
+              //                     `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
+              //                   )
+              // }
             }
-            // else{
-            //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"),
-            //                     `id do btn `+ e.target.getAttribute("data-id"),
-            //                     `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-            //                   )
-            // }
-          }
 
-          //REMOVENDO MODAL
-          document.getElementById("edit-modal").classList.remove("active");
+            //REMOVENDO MODAL
+            document.getElementById("edit-modal").classList.remove("active");
         });
     }
   });
 }
-
+maskInputNumber(document.querySelector("#edit-number-input"));
 //Chamando funcao
 updateClient();
