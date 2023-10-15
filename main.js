@@ -6,12 +6,17 @@ const openModal = () =>
 const closeModal = () =>
   document.getElementById("modal").classList.remove("active");
 
+const closeEditModal = () =>
+  document.getElementById("edit-modal").classList.remove("active");
+
 document
   .getElementById("cadastrarCliente")
   .addEventListener("click", openModal);
 
 document.getElementById("modalClose").addEventListener("click", closeModal);
+document.getElementById("modalEditClose").addEventListener("click", closeEditModal);
 
+document.querySelector('#edit-cancel').addEventListener('click', closeEditModal);
 
 
 //=====================================CREATE===================================
@@ -34,33 +39,46 @@ function maskInputNumber(input) {
 }
 maskInputNumber(document.querySelector("#number-input"));
 
-//VALIDAR NOVO CLIENTE
-function validateNewClient() {
-  let validName =
-    document.querySelector("#name-input").value !== "" ? true : false;
 
+//OBJETO COM OS ATRIBUTOS DO CLIENTE
+let client = {
+  name: document.querySelector("#name-input"),
+  email: document.querySelector("#email-input"),
+  numero: document.querySelector("#number-input"),
+  cidade: document.querySelector("#city-input"),
+  msgErro: document.querySelector('.error-msg')
+};
+
+//FUNÇÃO QUE VALIDA OS DADOS DO CLIENTE
+function validateNewClient(inputName, inputEmail, inputNumber, inputCity, errorMsg) {
+  //se o valor for diferente de vazio recebe TRUE se não FALSE
+  let validName =
+    inputName.value !== "" ? true : false;
+
+    //se o valor for diferente de vazio E no valor tiver o sinal de "@" recebe TRUE se não FALSE
   let validEmail;
   if (
-    document.querySelector("#email-input").value.includes("@") &&
-    document.querySelector("#email-input").value !== ""
-  ) {
+    inputEmail.value.includes("@") && inputEmail.value !== "") {
     validEmail = true;
   } else {
     validEmail = false;
   }
 
-  let validNumber =
-    document.querySelector("#number-input").value !== "" ? true : false;
-  let validCity =
-    document.querySelector("#city-input").value !== "" ? true : false;
+  //se o valor for diferente de vazio recebe TRUE se não FALSE
+  let validNumber = inputNumber.value !== "" ? true : false;
 
+  //se o valor for diferente de vazio recebe TRUE se não FALSE
+  let validCity = inputCity.value !== "" ? true : false;
+
+  //VERIFICA SE TODOS ESTÃO PREENCHIDOS
   if(validName === false || validEmail === false || validNumber === false || validCity === false){
+
     if((validName === true && validEmail === false && validNumber === true && validCity && true)) {
-      document.querySelector('.error-msg').innerHTML = ('Digite um email válido')
+      errorMsg.innerHTML = ('Digite um email válido')
       return false;
     }
-    document.querySelector('.error-msg').innerHTML = ('Preencha todas as infromações')
-    return false;
+      errorMsg.innerHTML = ('Preencha todas as infromações')
+      return false;
   } else 
       return true;
 
@@ -69,30 +87,20 @@ function validateNewClient() {
 //ARRAY DE CLIENTES
 const listClientes = [];
 
-//CONTADOR
+//CONTADOR DE ID
 let countID = 1;
 
 //FUNÇÃO QUE CRIA UM NOVO CLIENTE
 const newClient = () => {
-  //OBJETO COM OS ATRIBUTOS DO CLIENTE
-
-  let client = {
-    name: document.querySelector("#name-input").value,
-    email: document.querySelector("#email-input").value,
-    numero: document.querySelector("#number-input").value,
-    cidade: document.querySelector("#city-input").value,
-  };
-
   readClient(client);
 
   //ADICONANDO O NOVO CLIENTE NO ARRAY DE CLIENTES
   listClientes.push(client);
-  // console.log(listClientes);
 };
 
 //ATRIBUINDO O EVENTO DE CLICK AO ELEMNTO DE ID save
 document.querySelector("#save").addEventListener("click", function () {
-  if (validateNewClient()) {
+  if (validateNewClient(client.name, client.email, client.numero, client.cidade , client.msgErro)) {
     
     //chamando função de criar novo cliente
     newClient()
@@ -106,14 +114,19 @@ document.querySelector("#save").addEventListener("click", function () {
   };
 });
 
-document.querySelector(".cancel").addEventListener("click", function () {
-  document.getElementById("modal").classList.remove("active");
-  document.querySelector("#name-input").value = ``;
-  document.querySelector("#email-input").value = ``;
-  document.querySelector("#number-input").value = ``;
-  document.querySelector("#city-input").value = ``;
-})
+//FUNÇÃO QUE CANCELA A CRIAÇÃO DE UM NOVO USUARIO
+function cancelCreateClient(el){
+  el.addEventListener("click", function () {
 
+    document.getElementById("modal").classList.remove("active");
+    document.querySelector("#name-input").value = ``;
+    document.querySelector("#email-input").value = ``;
+    document.querySelector("#number-input").value = ``;
+    document.querySelector("#city-input").value = ``;
+  }) 
+}
+
+cancelCreateClient(document.querySelector('#cancel'))
 //=====================================CREATE===================================
 
 
@@ -121,10 +134,10 @@ document.querySelector(".cancel").addEventListener("click", function () {
 function readClient(client) {
   //INSERINDO NOVO ELEMENTO HTML DENTRO DO TBODY
   let html = `<tr class="client" id="${countID}">
-                    <td>${client.name}</td>
-                    <td>${client.email}</td>
-                    <td>${client.numero}</td>
-                    <td>${client.cidade}</td>
+                    <td>${client.name.value}</td>
+                    <td>${client.email.value}</td>
+                    <td>${client.numero.value}</td>
+                    <td>${client.cidade.value}</td>
                     <td>
                         <button type="button" class="button green edit-btn" data-id=${countID}>editar</button>
                         <button type="button" class="button red excluir-btn" data-id=${countID}>excluir</button>
@@ -164,7 +177,7 @@ function removeClient() {
 
 //CHAMANDO FUNÇÃO
 removeClient();
-//====================================DELETE====================================
+//====================================UPDATE====================================
 
 function updateClient() {
   //funcao de click em todo o DOM
@@ -214,20 +227,22 @@ function updateClient() {
       document
         .querySelector("#edit-save")
         .addEventListener("click", function () {
-            //objeto de editar o cliente
-            let editClient = {
-              name: document.querySelector("#edit-name-input").value,
-              email: document.querySelector("#edit-email-input").value,
-              numero: document.querySelector("#edit-number-input").value,
-              cidade: document.querySelector("#edit-city-input").value,
-            };
+          //objeto de editar o cliente
+          let editClient = {
+            name: document.querySelector("#edit-name-input"),
+            email: document.querySelector("#edit-email-input"),
+            numero: document.querySelector("#edit-number-input"),
+            cidade: document.querySelector("#edit-city-input"),
+            msgErro: document.querySelector("#edit-error-msg") 
+          };
 
+          if (validateNewClient(editClient.name, editClient.email, editClient.numero, editClient.cidade, editClient.msgErro)) {
             //html da tr com os valores editados
             let html = `<tr class="client" id="${dataIdBtn}">
-                                <td>${editClient.name}</td>
-                                <td>${editClient.email}</td>
-                                <td>${editClient.numero}</td>
-                                <td>${editClient.cidade}</td>
+                                <td>${editClient.name.value}</td>
+                                <td>${editClient.email.value}</td>
+                                <td>${editClient.numero.value}</td>
+                                <td>${editClient.cidade.value}</td>
                                 <td>
                                     <button type="button" class="button green edit-btn" data-id=${dataIdBtn}>editar</button>
                                     <button type="button" class="button red excluir-btn" data-id=${dataIdBtn}>excluir</button>
@@ -246,26 +261,17 @@ function updateClient() {
               ) {
                 //cliente atual recebe o valor do html
                 clientes[i].innerHTML = html;
-
-                // console.log(  `TRUE` +  `id do client `+clientes[i].getAttribute("id"),
-                //               `id do btn `+ e.target.getAttribute("data-id"),
-                //               `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-                //             )
               }
-              // else{
-              //       console.log(  `FALSO` +  `id do client `+clientes[i].getAttribute("id"),
-              //                     `id do btn `+ e.target.getAttribute("data-id"),
-              //                     `id do modal `+ document.getElementById("edit-modal").getAttribute(`data-id`)
-              //                   )
-              // }
             }
 
             //REMOVENDO MODAL
             document.getElementById("edit-modal").classList.remove("active");
+          }
         });
     }
   });
 }
 maskInputNumber(document.querySelector("#edit-number-input"));
+
 //Chamando funcao
 updateClient();
